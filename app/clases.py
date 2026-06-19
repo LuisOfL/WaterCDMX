@@ -7,7 +7,7 @@ class DimTiempo:
         self.anio = self.fecha.year
         self.mes = self.fecha.month
         self.dia = self.fecha.day
-        self.dia_semana = self.fecha.weekday()
+        
 
 
 class DimAlcaldia:
