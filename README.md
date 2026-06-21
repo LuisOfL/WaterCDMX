@@ -61,10 +61,16 @@ pipeline -> Es el flujo de datos desde la extraccion hasta la carga (Los dataset
 ```bash
 pip install -r requirements.txt
 ```
+### Paso 2: Correr programa
+```bash
+streamlit run app.py
+```
+
 
 ---
 ## Uso de la carpeta pipeline (app)
-### Requisitos Previos
 
-
-
+### Paso 1: Instalar Dependencias
+```bash
+pip install -r requirements.txt
+```
