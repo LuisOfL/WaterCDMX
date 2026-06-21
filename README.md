@@ -51,7 +51,7 @@ pipeline -> Es el flujo de datos desde la extraccion hasta la carga (Los dataset
 
 ---
 
-## Instalación y Uso Local
+## Instalación y Uso Local para aplicacion (app)
 
 ### Requisitos Previos
 * Python 3.11 o superior instalado.
@@ -60,3 +60,11 @@ pipeline -> Es el flujo de datos desde la extraccion hasta la carga (Los dataset
 ### Paso 1: Instalar Dependencias
 ```bash
 pip install -r requirements.txt
+```
+
+---
+## Uso de la carpeta pipeline (app)
+### Requisitos Previos
+
+
+
