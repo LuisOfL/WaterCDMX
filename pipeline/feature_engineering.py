@@ -8,7 +8,7 @@ print("=== FEATURE ENGINEERING V2: LLUVIA INTENSA ===")
 # ==========================================
 
 df = pd.read_csv(
-    "dataset_integrado.csv",
+    "s3://apps-proyecto/dataset_integrado.csv",
     parse_dates=["fecha"]
 )
 
@@ -240,9 +240,6 @@ df["lluvia_acumulada_ponderada"] = (
 )
 
 # ==========================================
-# 8. TRANSFORMACIÓN LOGARÍTMICA
-# Solo a variables de precipitación/acumulados.
-# No se aplica a la variable objetivo.
 # ==========================================
 
 columnas_log = [
@@ -298,7 +295,7 @@ print(df.columns.tolist())
 # ==========================================
 
 df.to_csv(
-    "dataset_modelo_lluvia.csv",
+    "dataset_modelo_lluvia1.csv",
     index=False
 )
 

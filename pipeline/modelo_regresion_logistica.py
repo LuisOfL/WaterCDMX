@@ -20,7 +20,7 @@ from sklearn.metrics import (
 print("=== MODELO BASE: REGRESIÓN LOGÍSTICA - LLUVIA INTENSA ===")
 
 df = pd.read_csv(
-    "dataset_modelo_lluvia.csv",
+    "s3://apps-proyecto/dataset_modelo_lluvia.csv",
     parse_dates=["fecha"]
 )
 
@@ -266,7 +266,7 @@ reporte_completo = reporte_completo.sort_values(
 )
 
 reporte_completo.to_csv(
-    "predicciones_regresion_logistica_lluvia.csv",
+    "predicciones_regresion_logistica_lluvia1.csv",
     index=False
 )
 

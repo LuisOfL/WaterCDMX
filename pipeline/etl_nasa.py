@@ -31,7 +31,7 @@ print("=== ETL NASA CON VARIABLES NUEVAS ===")
 # ==================================================
 
 df_nasa = pd.read_csv(
-    "clima_nasa_crudo.csv"
+    "s3://apps-proyecto/clima_nasa_crudo.csv"
 )
 
 print(f"\nRegistros iniciales: {df_nasa.shape[0]:,}")
@@ -95,7 +95,7 @@ if faltantes:
 # ==================================================
 
 cdmx = gpd.read_file(
-    "../alcaldias/poligonos_alcaldias_cdmx.shp"
+    "alcaldias/poligonos_alcaldias_cdmx.shp"
 )
 
 cdmx = cdmx.to_crs(epsg=4326)
@@ -171,7 +171,6 @@ print(
 
 if "alcaldia" in df_nasa.columns:
 
-    # Si el archivo crudo ya trae alcaldía, solo filtramos por los puntos válidos
     df_nasa = pd.merge(
         df_nasa,
         puntos_cdmx[["lat", "lon"]],
@@ -181,7 +180,7 @@ if "alcaldia" in df_nasa.columns:
 
 else:
 
-    # Si el archivo crudo no trae alcaldía, la agregamos desde el shapefile
+
     df_nasa = pd.merge(
         df_nasa,
         puntos_cdmx,
@@ -354,7 +353,7 @@ print(df_nasa.columns.tolist())
 # ==================================================
 
 df_nasa.to_csv(
-    "nasa_limpio.csv",
+    "nasa_limpio2.csv",
     index=False
 )
 

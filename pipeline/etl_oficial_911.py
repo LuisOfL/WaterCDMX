@@ -57,7 +57,7 @@ def limpiar_nombre_columna(texto):
 # =====================================================
 
 df_911 = pd.read_csv(
-    "911_sin_filtrar.csv",
+    "s3://apps-proyecto/911_sin_filtrar.csv",
     encoding="latin1"
 )
 

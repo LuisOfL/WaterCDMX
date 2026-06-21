@@ -25,12 +25,12 @@ def normalizar_alcaldia(texto):
 # =====================================================
 
 nasa = pd.read_csv(
-    "nasa_limpio.csv",
+    "s3://apps-proyecto/nasa_limpio.csv",
     parse_dates=["fecha"]
 )
 
 incidentes = pd.read_csv(
-    "911_alcaldia_dia.csv",
+    "s3://apps-proyecto/911_alcaldia_dia.csv",
     parse_dates=["fecha"]
 )
 
@@ -182,7 +182,7 @@ print(sorted(dataset["alcaldia"].unique()))
 # =====================================================
 
 dataset.to_csv(
-    "dataset_integrado.csv",
+    "dataset_integrado1.csv",
     index=False
 )
 
