@@ -4,9 +4,7 @@ import unicodedata
 print("=== ETL 911: INCIDENTES HÍDRICOS CONFIRMADOS ===")
 
 
-# =====================================================
-# FUNCIONES
-# =====================================================
+
 
 def limpiar_texto(texto):
     if not isinstance(texto, str):
@@ -52,9 +50,7 @@ def limpiar_nombre_columna(texto):
     )
 
 
-# =====================================================
-# 1. CARGA
-# =====================================================
+
 
 df_911 = pd.read_csv(
     "s3://apps-proyecto/911_sin_filtrar.csv",
@@ -66,9 +62,7 @@ print("\nColumnas originales:")
 print(df_911.columns.tolist())
 
 
-# =====================================================
-# 2. MAPEO DE COLUMNAS
-# =====================================================
+
 
 col_alcaldia = "alcaldia_cierre"
 col_fecha = "fecha_creacion"
@@ -100,9 +94,7 @@ if faltantes:
     )
 
 
-# =====================================================
-# 3. NORMALIZACIÓN DE TEXTO
-# =====================================================
+
 
 df_911[col_incidente] = (
     df_911[col_incidente]
@@ -126,9 +118,6 @@ df_911[col_alcaldia] = (
 )
 
 
-# =====================================================
-# 4. FILTRAR INCIDENTES HÍDRICOS DE INTERÉS
-# =====================================================
 
 incidentes_interes = [
     "inundacion",
@@ -151,9 +140,6 @@ print(
 )
 
 
-# =====================================================
-# 5. CONSERVAR SOLO INCIDENTES CONFIRMADOS
-# =====================================================
 
 codigos_afirmativos = [
     "a",
@@ -173,9 +159,6 @@ print(
 )
 
 
-# =====================================================
-# 6. FECHA
-# =====================================================
 
 df_911["fecha"] = pd.to_datetime(
     df_911[col_fecha],
@@ -189,9 +172,6 @@ df_911 = df_911.dropna(
 df_911["fecha"] = df_911["fecha"].dt.normalize()
 
 
-# =====================================================
-# 7. COORDENADAS
-# =====================================================
 
 df_911[col_lat] = pd.to_numeric(
     df_911[col_lat],
@@ -211,9 +191,6 @@ df_911 = df_911.dropna(
 )
 
 
-# =====================================================
-# 8. FILTRO GEOGRÁFICO CDMX
-# =====================================================
 
 df_911 = df_911[
     (df_911[col_lat] >= 19.0) &
@@ -225,9 +202,6 @@ df_911 = df_911[
 print(f"\nTras filtro geográfico CDMX: {df_911.shape[0]:,}")
 
 
-# =====================================================
-# 9. LIMPIAR ALCALDÍAS
-# =====================================================
 
 df_911 = df_911.dropna(
     subset=[col_alcaldia]
@@ -238,9 +212,6 @@ df_911 = df_911[
 ].copy()
 
 
-# =====================================================
-# 10. SELECCIÓN FINAL DETALLADA
-# =====================================================
 
 df_911_limpio = df_911[
     [
@@ -274,9 +245,6 @@ df_911_limpio["alcaldia"] = (
 )
 
 
-# =====================================================
-# 11. TABLA AGREGADA POR FECHA + ALCALDÍA
-# =====================================================
 
 tabla_incidentes = pd.crosstab(
     index=[
@@ -335,9 +303,6 @@ tabla_incidentes["hubo_incidente_hidrico"] = (
 ).astype(int)
 
 
-# =====================================================
-# 12. AUDITORÍA
-# =====================================================
 
 print("\n=== RESUMEN FINAL DETALLADO ===")
 
@@ -394,9 +359,6 @@ print("\nFecha máxima:")
 print(df_911_limpio["fecha"].max())
 
 
-# =====================================================
-# 13. EXPORTAR
-# =====================================================
 
 df_911_limpio.to_csv(
     "911_limpio.csv",
