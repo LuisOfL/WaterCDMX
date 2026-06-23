@@ -29,9 +29,6 @@ df = df.sort_values("fecha")
 print("\nDataset:")
 print(df.shape)
 
-# ==========================================
-# VARIABLE OBJETIVO
-# ==========================================
 
 y = df["lluvia_intensa"]
 
@@ -39,10 +36,6 @@ print("\nDistribución objetivo:")
 print(y.value_counts())
 print(y.value_counts(normalize=True) * 100)
 
-# ==========================================
-# VARIABLES PREDICTORAS SIN FUGA
-# NO usar precip del mismo día ni variables derivadas de precip actual
-# ==========================================
 
 features = [
     "alcaldia",
@@ -111,9 +104,6 @@ print("\nVariables usadas:")
 print(features)
 print("\nTotal variables:", len(features))
 
-# ==========================================
-# DIVISIÓN TEMPORAL
-# ==========================================
 
 corte = int(len(df) * 0.80)
 
@@ -133,9 +123,6 @@ print(df["fecha"].iloc[:corte].min(), "a", df["fecha"].iloc[:corte].max())
 print("\nRango test:")
 print(df["fecha"].iloc[corte:].min(), "a", df["fecha"].iloc[corte:].max())
 
-# ==========================================
-# PREPROCESAMIENTO
-# ==========================================
 
 categoricas = ["alcaldia"]
 
@@ -159,9 +146,7 @@ preprocesador = ColumnTransformer(
     ]
 )
 
-# ==========================================
-# MODELO
-# ==========================================
+
 
 modelo = Pipeline(
     steps=[
@@ -179,15 +164,8 @@ modelo = Pipeline(
 
 modelo.fit(X_train, y_train)
 
-# ==========================================
-# PREDICCIONES
-# ==========================================
 
 y_prob = modelo.predict_proba(X_test)[:, 1]
-
-# ==========================================
-# BUSCAR MEJOR UMBRAL POR F1
-# ==========================================
 
 mejor_umbral = 0
 mejor_f1 = 0
@@ -217,9 +195,6 @@ print("========================")
 print("Umbral:", mejor_umbral)
 print("Mejor F1:", mejor_f1)
 
-# ==========================================
-# MÉTRICAS
-# ==========================================
 
 print("\n=== MÉTRICAS ===")
 print("Accuracy:", accuracy_score(y_test, y_pred))
@@ -234,9 +209,6 @@ print(confusion_matrix(y_test, y_pred))
 print("\n=== REPORTE ===")
 print(classification_report(y_test, y_pred))
 
-# ==========================================
-# REPORTE COMPLETO DE PREDICCIONES
-# ==========================================
 
 print("\nGenerando reporte completo de predicciones...")
 
