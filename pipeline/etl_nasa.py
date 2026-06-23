@@ -4,9 +4,7 @@ from shapely.geometry import Point
 import unicodedata
 
 
-# ==================================================
-# FUNCIÓN PARA NORMALIZAR ALCALDÍAS
-# ==================================================
+
 
 def normalizar_alcaldia(texto):
 
@@ -26,9 +24,7 @@ def normalizar_alcaldia(texto):
 
 print("=== ETL NASA CON VARIABLES NUEVAS ===")
 
-# ==================================================
-# 1. CARGAR NASA
-# ==================================================
+
 
 df_nasa = pd.read_csv(
     "s3://apps-proyecto/clima_nasa_crudo.csv"
@@ -39,9 +35,7 @@ print(f"\nRegistros iniciales: {df_nasa.shape[0]:,}")
 print("\nColumnas detectadas:")
 print(df_nasa.columns.tolist())
 
-# ==================================================
-# 2. RENOMBRAR COLUMNAS SI VIENEN CON NOMBRES NASA
-# ==================================================
+
 
 renombrar_columnas = {
     "PRECTOTCORR": "precip",
@@ -64,9 +58,7 @@ df_nasa = df_nasa.rename(
 print("\nColumnas después de renombrar:")
 print(df_nasa.columns.tolist())
 
-# ==================================================
-# 3. VALIDAR COLUMNAS BÁSICAS
-# ==================================================
+
 
 columnas_obligatorias = [
     "fecha",
@@ -90,9 +82,7 @@ if faltantes:
         f"Faltan columnas obligatorias en clima_nasa_crudo.csv: {faltantes}"
     )
 
-# ==================================================
-# 4. CARGAR SHAPEFILE
-# ==================================================
+
 
 cdmx = gpd.read_file(
     "alcaldias/poligonos_alcaldias_cdmx.shp"
@@ -102,9 +92,7 @@ cdmx = cdmx.to_crs(epsg=4326)
 
 cdmx["geometry"] = cdmx["geometry"].buffer(0)
 
-# ==================================================
-# 5. PUNTOS ÚNICOS
-# ==================================================
+
 
 puntos_unicos = (
     df_nasa[["lat", "lon"]]
@@ -117,9 +105,7 @@ print(
     f"{puntos_unicos.shape[0]}"
 )
 
-# ==================================================
-# 6. CREAR GEOMETRÍA DE PUNTOS
-# ==================================================
+
 
 geometry = [
     Point(xy)
@@ -135,9 +121,7 @@ gdf_puntos = gpd.GeoDataFrame(
     crs="EPSG:4326"
 )
 
-# ==================================================
-# 7. ASIGNAR ALCALDÍA
-# ==================================================
+
 
 puntos_cdmx = gpd.sjoin(
     gdf_puntos,
@@ -165,9 +149,7 @@ print(
     f"{puntos_cdmx.shape[0]}"
 )
 
-# ==================================================
-# 8. FILTRAR NASA A PUNTOS DENTRO DE CDMX
-# ==================================================
+
 
 if "alcaldia" in df_nasa.columns:
 
@@ -192,9 +174,7 @@ print(
     f"Registros dentro de CDMX: "
     f"{df_nasa.shape[0]:,}"
 )
-# ==================================================
-# 9. FECHA
-# ==================================================
+
 
 df_nasa["fecha"] = pd.to_datetime(
     df_nasa["fecha"].astype(str),
@@ -206,9 +186,7 @@ df_nasa = df_nasa.dropna(
     subset=["fecha"]
 )
 
-# ==================================================
-# 10. VARIABLES CLIMÁTICAS DISPONIBLES
-# ==================================================
+
 
 variables_clima_posibles = [
     "precip",
@@ -232,9 +210,7 @@ variables_clima = [
 print("\nVariables climáticas utilizadas:")
 print(variables_clima)
 
-# ==================================================
-# 11. CONVERTIR A NUMÉRICO
-# ==================================================
+
 
 for col in variables_clima:
 
@@ -243,9 +219,6 @@ for col in variables_clima:
         errors="coerce"
     )
 
-# ==================================================
-# 12. CONTROL DE CALIDAD NASA
-# ==================================================
 
 print("\n=== CONTROL DE CALIDAD ===")
 
@@ -263,9 +236,7 @@ for col in variables_clima:
         df_nasa[col] <= -99
     )
 
-# ==================================================
-# 13. IMPUTACIÓN POR PUNTO GEOGRÁFICO
-# ==================================================
+
 
 df_nasa = df_nasa.sort_values(
     by=["lat", "lon", "fecha"]
@@ -278,9 +249,7 @@ df_nasa[variables_clima] = (
     .bfill()
 )
 
-# ==================================================
-# 14. NORMALIZAR ALCALDÍAS
-# ==================================================
+
 
 df_nasa["alcaldia"] = (
     df_nasa["alcaldia"]
@@ -292,9 +261,6 @@ df_nasa = df_nasa.dropna(
 )
 
 
-# ==================================================
-# 16. VALIDACIÓN FINAL
-# ==================================================
 
 print("\n=== VALIDACIÓN FINAL ===")
 
@@ -348,9 +314,6 @@ print("Fecha máxima:", df_nasa["fecha"].max())
 print("\nColumnas finales:")
 print(df_nasa.columns.tolist())
 
-# ==================================================
-# 17. EXPORTAR
-# ==================================================
 
 df_nasa.to_csv(
     "nasa_limpio2.csv",
