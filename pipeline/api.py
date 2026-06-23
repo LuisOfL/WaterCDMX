@@ -7,9 +7,6 @@ import time
 
 print("=== EXTRACCIÓN NASA POWER SOLO PUNTOS CDMX ===")
 
-# ==================================================
-# 1. GENERAR MALLA DE COORDENADAS
-# ==================================================
 
 minx, maxx = -99.36, -98.94
 miny, maxy = 19.03, 19.59
@@ -27,9 +24,7 @@ for lat in lats:
 
 print(f"Puntos generados inicialmente: {len(puntos_coordenadas)}")
 
-# ==================================================
-# 2. CARGAR SHAPEFILE DE ALCALDÍAS
-# ==================================================
+
 
 cdmx = gpd.read_file(
     "../alcaldias/poligonos_alcaldias_cdmx.shp"
@@ -38,9 +33,7 @@ cdmx = gpd.read_file(
 cdmx = cdmx.to_crs(epsg=4326)
 cdmx["geometry"] = cdmx["geometry"].buffer(0)
 
-# ==================================================
-# 3. CONVERTIR MALLA A GEODATAFRAME
-# ==================================================
+
 
 df_puntos = pd.DataFrame(
     puntos_coordenadas,
@@ -58,9 +51,7 @@ gdf_puntos = gpd.GeoDataFrame(
     crs="EPSG:4326"
 )
 
-# ==================================================
-# 4. FILTRAR SOLO PUNTOS DENTRO DE CDMX
-# ==================================================
+
 
 puntos_cdmx = gpd.sjoin(
     gdf_puntos,
@@ -95,9 +86,7 @@ total_puntos = len(puntos_coordenadas)
 print(f"Puntos dentro de CDMX: {total_puntos}")
 print(f"Registros estimados: {total_puntos * 1095:,}")
 
-# ==================================================
-# 5. CONFIGURACIÓN DE LA API NASA POWER
-# ==================================================
+
 
 start_date = "20190102"
 end_date = "20211231"
@@ -116,9 +105,7 @@ parameters = (
     "T2MDEW"
 )
 
-# ==================================================
-# 6. EXTRACCIÓN DE LA API
-# ==================================================
+
 
 rows = []
 
@@ -230,9 +217,7 @@ for idx, (lat, lon) in enumerate(puntos_coordenadas, 1):
 
         print(f"--- Respaldo guardado en punto {idx} ---")
 
-# ==================================================
-# 7. EXPORTAR DATASET CRUDO
-# ==================================================
+
 
 if rows:
 
