@@ -4,7 +4,6 @@ df = pd.read_csv(
     "dataset_integrado.csv"
 )
 
-# NUEVA VARIABLE OBJETIVO PROPUESTA
 
 df["lluvia_intensa"] = (
     df["precip"] >= 5
