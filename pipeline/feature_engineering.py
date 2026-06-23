@@ -3,9 +3,7 @@ import numpy as np
 
 print("=== FEATURE ENGINEERING V2: LLUVIA INTENSA ===")
 
-# ==========================================
-# 1. CARGAR DATASET INTEGRADO
-# ==========================================
+#
 
 df = pd.read_csv(
     "s3://apps-proyecto/dataset_integrado.csv",
@@ -20,9 +18,6 @@ print("\nDataset inicial:")
 print(df.shape)
 print(df.columns.tolist())
 
-# ==================================================
-# 15. VARIABLES DERIVADAS NASA
-# ==================================================
 
 if (
     "temp_max" in df.columns
@@ -76,9 +71,6 @@ if (
 
 
 
-# ==========================================
-# 2. VARIABLE OBJETIVO NUEVA
-# ==========================================
 
 df["lluvia_intensa"] = (
     df["precip"] >= 5
@@ -88,9 +80,6 @@ print("\nDistribución lluvia_intensa:")
 print(df["lluvia_intensa"].value_counts())
 print(df["lluvia_intensa"].value_counts(normalize=True) * 100)
 
-# ==========================================
-# 3. VARIABLES TEMPORALES
-# ==========================================
 
 df["mes"] = df["fecha"].dt.month
 df["trimestre"] = df["fecha"].dt.quarter
@@ -100,11 +89,6 @@ df["temporada_lluvias"] = (
     df["mes"].isin([6, 7, 8, 9, 10])
 ).astype(int)
 
-# ==========================================
-# 4. VARIABLES HISTÓRICAS DE PRECIPITACIÓN
-# IMPORTANTE: todas usan shift(1)
-# para no usar la lluvia del mismo día como predictor histórico
-# ==========================================
 
 ventanas_precip = [1, 3, 7, 14, 30]
 
@@ -129,9 +113,6 @@ for ventana in ventanas_precip:
               )
         )
 
-# ==========================================
-# 5. VARIABLES HISTÓRICAS DE INCIDENTES 911
-# ==========================================
 
 variables_incidentes = [
     "inundacion",
@@ -180,9 +161,7 @@ for var in variables_incidentes:
           )
     )
 
-# ==========================================
-# 6. VARIABLES DERIVADAS METEOROLÓGICAS
-# ==========================================
+
 
 if "temp_max" in df.columns and "temp_min" in df.columns:
     df["rango_temp"] = df["temp_max"] - df["temp_min"]
@@ -221,9 +200,6 @@ if "precip" in df.columns and "viento_max" in df.columns:
         df["precip"] * df["viento_max"]
     )
 
-# ==========================================
-# 7. VARIABLES DE LLUVIA RECIENTE
-# ==========================================
 
 df["llovio_ayer"] = (
     df["precip_1d"] >= 1
@@ -239,8 +215,6 @@ df["lluvia_acumulada_ponderada"] = (
     + 0.20 * (df["precip_7d"].fillna(0) / 7)
 )
 
-# ==========================================
-# ==========================================
 
 columnas_log = [
     "precip",
@@ -262,15 +236,8 @@ for col in columnas_log:
         df[col].fillna(0)
     )
 
-# ==========================================
-# 9. RELLENAR NULOS
-# ==========================================
-
 df = df.fillna(0)
 
-# ==========================================
-# 10. VALIDACIÓN
-# ==========================================
 
 print("\nDataset final:")
 print(df.shape)
@@ -290,9 +257,6 @@ print(
 print("\nColumnas finales:")
 print(df.columns.tolist())
 
-# ==========================================
-# 11. EXPORTAR
-# ==========================================
 
 df.to_csv(
     "dataset_modelo_lluvia1.csv",
