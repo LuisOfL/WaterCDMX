@@ -4,9 +4,6 @@ import unicodedata
 print("=== INTEGRACIÓN DATASETS: NASA + 911 ===")
 
 
-# =====================================================
-# FUNCIONES
-# =====================================================
 
 def normalizar_alcaldia(texto):
     if pd.isna(texto):
@@ -20,9 +17,6 @@ def normalizar_alcaldia(texto):
     return texto.strip().upper()
 
 
-# =====================================================
-# 1. CARGAR DATASETS LIMPIOS
-# =====================================================
 
 nasa = pd.read_csv(
     "s3://apps-proyecto/nasa_limpio.csv",
@@ -43,17 +37,11 @@ print(incidentes.shape)
 print(incidentes.columns.tolist())
 
 
-# =====================================================
-# 2. NORMALIZAR ALCALDÍAS
-# =====================================================
 
 nasa["alcaldia"] = nasa["alcaldia"].apply(normalizar_alcaldia)
 incidentes["alcaldia"] = incidentes["alcaldia"].apply(normalizar_alcaldia)
 
 
-# =====================================================
-# 3. AGRUPAR NASA POR FECHA + ALCALDÍA
-# =====================================================
 
 columnas_no_clima = [
     "fecha",
@@ -83,10 +71,6 @@ print("\nNASA agrupado por fecha-alcaldía:")
 print(clima_alcaldia_dia.shape)
 
 
-# =====================================================
-# 4. INTEGRAR NASA + 911
-# =====================================================
-
 dataset = clima_alcaldia_dia.merge(
     incidentes,
     on=["fecha", "alcaldia"],
@@ -94,9 +78,6 @@ dataset = clima_alcaldia_dia.merge(
 )
 
 
-# =====================================================
-# 5. RELLENAR DÍAS SIN INCIDENTES
-# =====================================================
 
 columnas_incidentes = [
     "aguas_negras",
@@ -121,10 +102,6 @@ dataset[columnas_incidentes] = (
 for col in columnas_incidentes:
     dataset[col] = dataset[col].astype(int)
 
-
-# =====================================================
-# 6. VALIDACIÓN
-# =====================================================
 
 print("\n=== VALIDACIÓN DATASET INTEGRADO ===")
 
@@ -177,9 +154,6 @@ print(dataset["alcaldia"].nunique())
 print(sorted(dataset["alcaldia"].unique()))
 
 
-# =====================================================
-# 7. EXPORTAR
-# =====================================================
 
 dataset.to_csv(
     "dataset_integrado1.csv",
